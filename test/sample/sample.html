@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>TEST</title>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, target-densitydpi=medium-dpi"
+      name="viewport"
+    />
+    <!-- 캐시 사용하지 않는 메타 -->
+    <meta http-equiv="pragma" content="no-cache" />
+    <!-- 캐시 사용하지 않는 메타 -->
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <!-- 캐시 사용하지 않는 메타 -->
+    <meta http-equiv="Expires" content="0" />
+    <link type="text/css" rel="stylesheet" href="./sample.css" />
+    <script src="../../dist/haram.js"></script>
+    <script>
+      // import * as Haram from "../../src/index.js";
+
+      function start() {
+        //버전 표시
+        document.getElementById("version").innerText = `version: ${Haram.getVersion()}`;
+      }
+      
+      function init() {
+        const baseUrl = document.getElementById("baseUrl").value;
+        const timeout = document.getElementById("timeout").value;
+        const isDebug = document.getElementById("isDebug").checked;
+        try {
+          Haram.init(baseUrl, timeout, isDebug);
+          document.getElementById("isInit").hidden = false;
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      
+      //============= auth ===============
+      async function fetchToken() {
+        console.log("fetchToken");
+      
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const response = await Haram.oauth2.fetchToken(email, password);
+        textAppend(document.getElementById("authResultMsg"), JSON.stringify(response, null, 2));
+        if (response.result) {
+          document.getElementById("decodeJwtMsg").value = JSON.stringify(decodeJWT(response.data.accessToken));
+        }
+      }
+
+      async function fetchTokenByToken() {
+        console.log("fetchTokenByToken");
+      
+        const accessToken = document.getElementById("accessToken").value;
+        const response = await Haram.oauth2.fetchTokenByToken(accessToken);
+        textAppend(document.getElementById("authResultMsg"), JSON.stringify(response, null, 2));
+        if (response.result) {
+          document.getElementById("decodeJwtMsg").value = JSON.stringify(decodeJWT(response.data.accessToken));
+        }
+      }
+
+      async function refreshToken() {
+        console.log("refreshToken");
+      
+        const refreshToken = document.getElementById("refreshToken").value;
+        const response = await Haram.oauth2.refreshToken(refreshToken);
+        textAppend(document.getElementById("authResultMsg"), JSON.stringify(response, null, 2));
+        if (response.result) {
+          document.getElementById("decodeJwtMsg").value = JSON.stringify(decodeJWT(response.data.accessToken));
+        }
+      }
+      
+      async function verifyToken() {
+        console.log("verifyToken");
+      
+        const accessToken = document.getElementById("accessToken").value;
+        const refreshToken = document.getElementById("refreshToken").value;
+        const response = await Haram.oauth2.verifyToken(accessToken, refreshToken);
+        textAppend(document.getElementById("authResultMsg"), JSON.stringify(response, null, 2));
+      }
+
+      async function deleteToken() {
+        const response = await Haram.oauth2.deleteToken();
+        textAppend(document.getElementById("authResultMsg"), JSON.stringify(response, null, 2));
+      }
+      
+      //============= presence ===============
+      async function agentLogin() {
+        console.log("agentLogin");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        const agentState = document.getElementById("agentLoginState").value;
+        const agentStateCause = document.getElementById("agentLoginStateCause").value;
+        return await Haram.presence.userLogin(userId, mediaSet, agentState, agentStateCause);
+      }
+
+      async function agentLogout() {
+        console.log("agentLogout");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        const agentState = document.getElementById("agentLoginState").value;
+        const agentStateCause = document.getElementById("agentLoginStateCause").value;
+        return await Haram.presence.userLogout(userId, mediaSet, agentState, agentStateCause);
+      }
+      
+      /**
+       * 상담사 상태 변경
+       * @returns {Object} response
+       */
+      async function setUserState() {
+        console.log("setUserState");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        const agentState = document.getElementById("agentState").value;
+        const agentStateCause = document.getElementById("agentStateCause").value;
+        return await Haram.presence.setUserState(userId, mediaSet, agentState, agentStateCause);
+      }
+      
+      /**
+       * 통화 종료후 상태 설정
+       * @returns {Object} response
+       */
+      async function setUserAfterState() {
+        console.log("setUserAfterState");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        const agentState = document.getElementById("agentAfterState").value;
+        const agentStateCause = document.getElementById("agentAfterStateCause").value;
+        return await Haram.presence.setUserAfterState(userId, mediaSet, agentState, agentStateCause);
+      }
+      /**
+       * 콜 회수 후 상태 설정
+       * @returns {Object} response
+       */
+      async function setUserRecallState() {
+        console.log("setUserRecallState");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        const agentState = document.getElementById("agentRecallState").value;
+        const agentStateCause = document.getElementById("agentRecallStateCause").value;
+        return await Haram.presence.setUserRecallState(userId, mediaSet, agentState, agentStateCause);
+      }
+      /**
+       * 유저 상태 조회
+       * @returns {Object} response
+       */
+      async function getUserState() {
+        console.log("getUserState");
+      
+        const userId = document.getElementById("userId").value;
+        const mediaSet = Array.from(document.querySelectorAll("[name=mediaType]:checked")).map(element => {
+          return element.value;
+        });
+        return await Haram.presence.getUserState(userId, mediaSet);
+      }
+
+      //============= notify ===============
+      function addSubscriptions(topic) {
+        Haram.notify.addSubscriptions(topic, data => {
+          console.log(data);
+        });
+      }
+      function delSubscriptions(topic) {
+        Haram.notify.delSubscriptions(topic);
+      }
+      
+      function addUserSubscriptions() {
+        const userId = document.getElementById("userId").value;
+        Haram.notify.addUserSubscriptions(userId, data => {
+          textAppend(document.getElementById("userEventMsg"), data);
+        });
+      }
+      function delUserSubscriptions() {
+        const userId = document.getElementById("userId").value;
+        Haram.notify.delUserSubscriptions(userId);
+      }
+      
+      function addCallSubscriptions() {
+        const callId = document.getElementById("callId").value;
+        Haram.notify.addCallSubscriptions(callId, data => {
+          textAppend(document.getElementById("callEventMsg"), data);
+        });
+      }
+      function delCallSubscriptions() {
+        const callId = document.getElementById("callId").value;
+        Haram.notify.delCallSubscriptions(callId);
+      }
+      
+      function addPhoneSubscriptions() {
+        const phoneId = document.getElementById("phoneId").value;
+        Haram.notify.addPhoneSubscriptions(phoneId);
+      }
+      function delPhoneSubscriptions() {
+        const phoneId = document.getElementById("phoneId").value;
+        Haram.notify.delPhoneSubscriptions(phoneId);
+      }
+
+      function addQueueSubscriptions() {
+        const phoneId = document.getElementById("queueId").value;
+        Haram.notify.addPhoneSubscriptions(phoneId);
+      }
+      function delQueueSubscriptions() {
+        const phoneId = document.getElementById("queueId").value;
+        Haram.notify.delPhoneSubscriptions(phoneId);
+      }
+
+      //============= call ===============
+      /**
+       * 발신
+       * @returns {Object} response
+       */
+      async function makecall() {
+        console.log("makecall");
+      
+        const userId = document.getElementById("userId").value;
+        const ani = document.getElementById("ani").value;
+        const dnis = document.getElementById("dnis").value;
+        const user_ani = document.getElementById("user_ani").value;
+        const media_type = document.querySelector("[name=mediaType]:checked").value;
+        const uei = document.getElementById("uei").value;
+        const uui = document.getElementById("uui").value;
+        const route_option = getRouteOption();
+        return await Haram.call.makeCallEx(userId, ani, dnis, user_ani, media_type, uei, uui, route_option);
+      }
+      /**
+       * 수신
+       * @returns {Object} response
+       */
+      async function answer() {
+        console.log("answer");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        return await Haram.call.answer(callId, connId);
+      }
+      /**
+       * 홀드
+       * @returns {Object} response
+       */
+      async function hold() {
+        console.log("hold");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        return await Haram.call.hold(callId, connId);
+      }
+      /**
+       * 언홀드
+       * @returns {Object} response
+       */
+      async function retrive() {
+        console.log("retrive");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        return await Haram.call.retrive(callId, connId);
+      }
+
+      /**
+       * 통화 종료
+       * @returns {Object} response
+       */
+      async function release() {
+        console.log("release");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        return await Haram.call.release(callId, connId);
+      }
+      /**
+       * 즉시 호전환
+       * @returns {Object} response
+       */
+      async function singleStepTransfer() {
+        console.log("singleStepTransfer");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        const dnis = document.getElementById("dnis").value;
+        const user_ani = document.getElementById("user_ani").value;
+        const route_option = getRouteOption();
+        return await Haram.call.singleStepTransfer(callId, connId, dnis, user_ani, route_option);
+      }
+      /**
+       * 협의 호전환
+       * @param {String} new_call_id 전환할 콜 id
+       * @returns {Object} response
+       */
+      async function muteTransfer(new_call_id) {
+        console.log("muteTransfer");
+      
+        const holdCallId = document.getElementById("holdCallId").value;
+        const holdConnId = document.getElementById("holdConnId").value;
+        const activeCallId = document.getElementById("activeCallId").value;
+        return await Haram.call.muteTransfer(holdCallId, holdConnId, activeCallId);
+      }
+      /**
+       * 즉시 3자통화
+       * @returns {Object} response
+       */
+      async function singleStepConference() {
+        console.log("singleStepConference");
+      
+        const callId = document.getElementById("callId").value;
+        const connId = document.getElementById("connId").value;
+        const dnis = document.getElementById("dnis").value;
+        const user_ani = document.getElementById("user_ani").value;
+        const route_option = getRouteOption();
+        return await Haram.call.singleStepConference(callId, connId, dnis, user_ani, route_option);
+      }
+      /**
+       * 협의 3자통화
+       * @returns {Object} response
+       */
+      async function muteConference() {
+        console.log("muteConference");
+      
+        const holdCallId = document.getElementById("holdCallId").value;
+        const holdConnId = document.getElementById("holdConnId").value;
+        const activeCallId = document.getElementById("activeCallId").value;
+        const partyType = document.getElementById("partyType").value;
+        return await Haram.call.muteConference(holdCallId, holdConnId, activeCallId, partyType);
+      }
+
+      //============= utils ===============
+      function decodeJWT(jwt) {
+        return Haram.util.decodeJWT(jwt);
+      }
+      
+      function getRouteOption() {
+        return {
+          type: document.getElementById("type").value,
+          priority: document.getElementById("priority").value,
+          relation_method: document.getElementById("relationMethod").value,
+          relation_agent_id: document.getElementById("relationAgentId").value,
+          relation_timeout: document.getElementById("relationTimeout").value,
+          method: document.getElementById("method").value,
+          skill_id: document.getElementById("skillId").value,
+          skill_level: document.getElementById("skillLevel").value,
+          group_id: document.getElementById("groupId").value,
+        };
+      }
+      
+      function textAppend(element, data) {
+        const top = element.scrollHeight;
+        element.value += "\n" + data + "\n";
+        element.scrollTop = top;
+      }
+    </script>
+  </head>
+
+  <body onload="start();">
+    <div id="version">
+    </div>
+
+    <hr>
+
+<!--    <div class="right title" >-->
+<!--      Event-->
+<!--      <textarea id="eventMessage" readonly>-->
+<!--      </textarea>-->
+<!--    </div>-->
+
+    <div>
+      <div class="title">Init Sample</div>
+      <table>
+        <tr>
+          <td required>server url</td>
+          <td><input class="width180px" type="text" id="baseUrl" value="http://100.100.106.111:30600">&nbsp;&nbsp;</td>
+          <td required>timeout</td>
+          <td><input class="width60px" type="number" id="timeout" value="10000">&nbsp;&nbsp;</td>
+          <td>debugging</td>
+          <td><input type="checkbox" id="isDebug" checked>&nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+          <td><button onclick="init();">Init</button></td>
+          <td><label class="highlight" id="isInit" hidden>initializied</label></td>
+        </tr>
+      </table>
+      <div>
+
+      </div>
+    </div>
+
+    <hr>
+
+    <div>
+      <div class="title">Authorizaion(Oauth2.0) Sample</div>
+      <table>
+        <tr>
+          <td required>email</td>
+          <td><input type="text" id="email" value="rnd1@bcloud.co.kr">&nbsp;&nbsp;</td>
+          <td required>password</td>
+          <td><input type="password" id="password" value="wlwndgo"></td>
+          <td><button onclick="fetchToken();">Fetch Token</button></td>
+        </tr>
+        <tr>
+          <td>accessToken</td>
+          <td colspan="3"><input class="width98per" type="text" id="accessToken"></td>
+          <td><button onclick="fetchTokenByToken();">Fetch Token By Token</button></td>
+        </tr>
+        <tr>
+          <td>refreshToken</td>
+          <td colspan="3"><input class="width98per" type="text" id="refreshToken"></td>
+          <td><button onclick="refreshToken();">Refresh Token</button></td>
+        </tr>
+        <tr>
+          <td><button onclick="verifyToken();">Verify Token</button></td>
+          <td><button onclick="deleteToken();">Delete Token</button></td>
+        </tr>
+      </table>
+      decoded jwt token
+      <textarea id="decodeJwtMsg" readonly></textarea>
+      <details>
+        <summary class="pin">Result</summary>
+        <textarea class="height200px" id="authResultMsg" readonly>
+        </textarea>
+      </details>
+    </div>
+
+    <hr>
+
+    <div>
+      <div class="title">Agent Presence Sample</div>
+      <table>
+        <tr>
+          <td required>user ID</td>
+          <td><input type="text" id="userId"></td>
+          <td>
+            <button onclick="addUserSubscriptions();">User Event Subscription</button>
+            <button onclick="delUserSubscriptions();">User Event Close</button>
+          </td>
+        </tr>
+        <tr>
+          <td required>media type</td>
+          <td colspan="3">
+            <input type="checkbox" name="mediaType" value="voice" checked><label>voice</label>
+            <input type="checkbox" name="mediaType" value="video"><label>video</label>
+            <input type="checkbox" name="mediaType" value="chat"><label>chat</label>
+            <input type="checkbox" name="mediaType" value="email"><label>email</label>
+          </td>
+        </tr>
+        <tr>
+          <td>state</td>
+          <td>
+            <select id="agentLoginState">
+              <option value="ready">ready</option>
+              <option value="inready">inready</option>
+              <option value="outready">outready</option>
+              <option value="notReady">notReady</option>
+              <option value="afterwork">afterwork</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>cause</td>
+          <td>
+            <select id="agentLoginStateCause">
+              <optgroup label="busy">
+                <option value="inbound">inbound</option>
+                <option value="outbound">outbound</option>
+              </optgroup>
+              <optgroup label="notready">
+                <option value="busy">busy</option>
+                <option value="away">away</option>
+                <option value="break">break</option>
+                <option value="idle">idle</option>
+                <option value="userdefine">userdefine</option>
+              </optgroup>
+              <option value="acw">acw</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <button onclick="agentLogin();">Login</button>
+            <button onclick="agentLogout();">Logout</button>
+          </td>
+        </tr>
+      </table>
+
+      <table>
+        <tr>
+          <td>state</td>
+          <td>
+            <select id="agentState">
+              <option value="ready">ready</option>
+              <option value="inready">inready</option>
+              <option value="outready">outready</option>
+              <option value="notReady">notReady</option>
+              <option value="afterwork">afterwork</option>
+            </select>
+            &nbsp;&nbsp;
+          </td>
+          <td>state cause</td>
+          <td>
+            <select id="agentStateCause">
+              <optgroup label="busy">
+                <option value="inbound">inbound</option>
+                <option value="outbound">outbound</option>
+              </optgroup>
+              <optgroup label="notready">
+                <option value="busy">busy</option>
+                <option value="away">away</option>
+                <option value="break">break</option>
+                <option value="idle">idle</option>
+                <option value="userdefine">userdefine</option>
+              </optgroup>
+              <option value="acw">acw</option>
+            </select>
+          </td>
+          <td><button onclick="setUserState();">Set UserState</button></td>
+        </tr>
+        <tr>
+          <td>state</td>
+          <td>
+            <select id="agentAfterState">
+              <option value="ready">ready</option>
+              <option value="inready">inready</option>
+              <option value="outready">outready</option>
+              <option value="notReady">notReady</option>
+              <option value="afterwork">afterwork</option>
+            </select>
+          </td>
+          <td>state cause</td>
+          <td>
+            <select id="agentAfterStateCause">
+              <optgroup label="busy">
+                <option value="inbound">inbound</option>
+                <option value="outbound">outbound</option>
+              </optgroup>
+              <optgroup label="notready">
+                <option value="busy">busy</option>
+                <option value="away">away</option>
+                <option value="break">break</option>
+                <option value="idle">idle</option>
+                <option value="userdefine">userdefine</option>
+              </optgroup>
+              <option value="acw">acw</option>
+            </select>
+          </td>
+          <td><button onclick="setUserAfterState();">Set UserAfterState</button></td>
+        </tr>
+        <tr>
+          <td>state</td>
+          <td>
+            <select id="agentRecallState">
+              <option value="ready">ready</option>
+              <option value="inready">inready</option>
+              <option value="outready">outready</option>
+              <option value="notReady">notReady</option>
+              <option value="afterwork">afterwork</option>
+            </select>
+          </td>
+          <td>state cause</td>
+          <td>
+            <select id="agentRecallStateCause">
+              <optgroup label="busy">
+                <option value="inbound">inbound</option>
+                <option value="outbound">outbound</option>
+              </optgroup>
+              <optgroup label="notready">
+                <option value="busy">busy</option>
+                <option value="away">away</option>
+                <option value="break">break</option>
+                <option value="idle">idle</option>
+                <option value="userdefine">userdefine</option>
+              </optgroup>
+              <option value="acw">acw</option>
+            </select>
+          </td>
+          <td><button onclick="setUserAfterState();">Set UserRecallState</button></td>
+        </tr>
+      </table>
+      <details>
+        <summary class="pin">User Event</summary>
+        <textarea class="height200px" id="userEventMsg" readonly>
+        </textarea>
+      </details>
+    </div>
+
+    <hr>
+
+    <div>
+      <div class="title">Call Sample</div>
+      <details>
+        <summary>route option</summary>
+        <table class="border" id="routeOption">
+          <tr><td></td><td>type</td><td><input class="width100px" type="text" id="type"></td></tr>
+          <tr><td></td><td>priority</td><td><input class="width100px" type="text" id="priority"></td></tr>
+          <tr><td></td><td>relation method</td><td><input class="width100px" type="text" id="relationMethod"></td></tr>
+          <tr><td></td><td>relation agent ID</td><td><input type="text" id="relationAgentId"></td></tr>
+          <tr><td></td><td>relation timeout</td><td><input class="width100px" type="text" id="relationTimeout"></td></tr>
+          <tr><td></td><td>method</td><td><input class="width100px" type="text" id="method"></td></tr>
+          <tr><td></td><td>skill ID</td><td><input class="width100px" type="text" id="skillId"></td></tr>
+          <tr><td></td><td>skill level</td><td><input class="width100px" type="text" id="skillLevel"></td></tr>
+          <tr><td></td><td>group ID</td><td><input type="text" id="groupId"></td></tr>
+        </table>
+      </details>
+      <div class="lineDef"></div>
+      <table>
+        <tr>
+          <td>my call ID</td>
+          <td><input type="text" id="callId"></td>
+          <td>
+            <button onclick="addCallSubscriptions();">Call Event Subscription</button>
+            <button onclick="delCallSubscriptions();">Call Event Close</button>
+          </td>
+        </tr>
+        <tr>
+          <td>conn ID</td>
+          <td><input type="text" id="connId"></td>
+          <td>
+            <button onclick="answer();">Answer</button>
+            <button onclick="hold();">Hold</button>
+            <button onclick="release();">Release call</button>
+          </td>
+        </tr>
+        <tr>
+          <td>hold call ID</td>
+          <td><input type="text" id="holdCallId"></td>
+          <td>
+            <button onclick="retrive();">Retrive</button>
+          </td>
+        </tr>
+        <tr>
+          <td>active call ID</td>
+          <td><input type="text" id="activeCallId"></td>
+          <td>
+            <button onclick="muteTransfer();">Hold and transfer</button>
+            <button onclick="muteConference();">Hold and conference</button>
+          </td>
+        </tr>
+        <tr>
+          <td>party type</td>
+          <td>
+            <select id="partyType">
+              <option value="trunk">trunk</option>
+              <option value="user">user</option>
+              <option value="acd">acd</option>
+              <option value="flow">flow</option>
+              <option value="phone">phone</option>
+            </select>
+          </td>
+        </tr>
+      </table>
+      <div class="lineDef"></div>
+      <table>
+        </tr>
+        <tr>
+          <td required>ani</td>
+          <td><input class="width100px" type="text" id="ani" value="5001"></td>
+          <td><button onclick="makecall();">Make call</button></td>
+        </tr>
+        <tr>
+          <td required>user ani</td>
+          <td><input class="width100px" type="text" id="user_ani" value="5001"></td>
+          <td><button onclick="singleStepTransfer();">SingleStep Transfer Call</button></td>
+        </tr>
+        <tr>
+          <td required>dnis</td>
+          <td><input class="width100px" type="text" id="dnis" value="5004"></td>
+          <td><button onclick="singleStepConference();">SingleStep Conference Call</button></td>
+        </tr>
+        <tr>
+          <td>uei</td>
+          <td><input class="width100px" type="text" id="uei"></td>
+        </tr>
+        <tr>
+          <td>uui</td>
+          <td><input class="width100px" type="text" id="uui"></td>
+        </tr>
+      </table>
+      <details>
+        <summary class="pin">Call Event</summary>
+        <textarea class="height200px" id="callEventMsg" readonly>
+        </textarea>
+      </details>
+    </div>
+
+  </body>
+</html>
