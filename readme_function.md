@@ -34,7 +34,7 @@ Haram.init("http://localhost:30600", 10*1000, false);
 - refreshToken(refreshToken)
 
 ~~~ javascript
-Haram.oauth2.fetchToken("admin@bcloud.co.kr", "1234");
+Haram.oauth2.fetchToken("jmh667722@gmail.com", "1234");
 ~~~
 
 

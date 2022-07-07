@@ -1,5 +1,5 @@
 {
-  "name": "cti_sdk",
+  "name": "js_sdk",
   "description": "Haram SDK for CTI.",
   "version": "0.0.1",
   "keywords": [
@@ -9,9 +9,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "http://git.bridgetec.co.kr/IPRON-CLOUD-WEB/SDK/cti_sdk.git"
+    "url": "http://git.bridgetec.co.kr/IPRON-CLOUD-WEB/SDK/js_sdk.git"
   },
-  "homepage": "http://git.bridgetec.co.kr/IPRON-CLOUD-WEB/SDK/cti_sdk",
+  "homepage": "http://git.bridgetec.co.kr/IPRON-CLOUD-WEB/SDK/js_sdk",
   "license": "MIT",
   "author":  "Jeong Myunghan <jmh6672@bridgetec.co.kr> (https://bridgetec.co.kr)",
   "private": true,

@@ -19,7 +19,7 @@ const apiClient = function () {
  * 사용자 목록 조회 - 테넌트별
  * @param {String} tenant_id
  * */
-export function getAgentList(tenant_id, group_id) {
+export function getUserList(tenant_id, group_id) {
   return apiClient().axios.get(`${API_NAME}/users/${tenant_id}`);
 }
 
@@ -27,6 +27,6 @@ export function getAgentList(tenant_id, group_id) {
  * 사용자 조회
  * @param {String} user_id
  * */
-export function getAgentInfo(user_id) {
+export function getUserInfo(user_id) {
   return apiClient().axios.get(`${API_NAME}/user/${user_id}`);
 }

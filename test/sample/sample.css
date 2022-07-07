@@ -1,0 +1,152 @@
+body{
+    background: #333333;
+    color: #B3B3B3;
+    padding-bottom: 20px;
+}
+
+button{
+    background: teal;
+    color: #DDDDDD;
+    font-weight: bold;
+    padding: 4px 6px 4px 6px;
+    box-shadow: 1px 4px 0 rgb(0,0,0,0.5);
+}
+
+button:active{
+    top: 2px;
+    position: relative;
+    box-shadow: 1px 1px 0 rgb(0,0,0,0.5);
+}
+
+textarea{
+    height: 100%;
+    width: 100%;
+}
+
+hr{
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+section{
+    width: 400px;
+    height: 400px;
+    float: left;
+    text-align: left;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+summary{
+    font-size: medium;
+    font-weight: bold;
+    color: #DDDDDD;
+}
+
+[disabled]{
+    background: grey;
+    color: #AAAAAA;
+}
+
+[required]{
+    color: coral !important;
+}
+
+[readonly]{
+    background: antiquewhite;
+}
+
+.width60px{
+    width: 60px;
+}
+.width100px{
+    width: 100px;
+}
+.width140px{
+    width: 140px;
+}
+.width180px{
+    width: 180px;
+}
+.width200px{
+    width: 200px;
+}
+.width300px{
+    width: 300px;
+}
+.width400px{
+    width: 400px;
+}
+.width600px{
+    width: 600px;
+}
+.width98per{
+    width: 98%;
+}
+
+.height100px{
+    height: 100px;
+}
+.height200px{
+    height: 200px;
+}
+.height300px{
+    height: 300px;
+}
+.height400px{
+    height: 400px;
+}
+.height500px{
+    height: 500px;
+}
+.height600px{
+    height: 600px;
+}
+.height98per{
+    height: 98%;
+}
+
+.border{
+    border:solid;
+}
+.title{
+    margin:10px;
+    font-size: large;
+    font-weight: bold;
+    color: #DDDDDD;
+}
+
+
+.right{
+    float: right;
+    width: 55%;
+}
+
+.isSelect{
+    display: none;
+}
+.isSelect:checked + label{
+    padding: 2px;
+    background: orange;
+    color: black;
+    font-weight: bold;
+}
+
+.highlight{
+    border-radius: 40px/20px;
+    padding: 2px 12px;
+    background: springgreen;
+    color: black;
+    font-weight: bold;
+}
+
+.lineDef{
+    height: 8px;
+}
+
+.pin{
+    margin-top: 10px;
+    margin-bottom: 4px;
+    background: burlywood;
+    color: black;
+}
